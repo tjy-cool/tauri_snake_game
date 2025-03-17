@@ -30,7 +30,7 @@ async function startGame() {
 }
 
 async function gameLoop() {
-  if (!gameStarted.value || gameOver.value) return;
+  if (!gameStarted.value) return;
 
   // 更新游戏状态
   const newState = await invoke('update_game');
@@ -41,7 +41,9 @@ async function gameLoop() {
   }
 
   draw();
-  setTimeout(gameLoop, 100);
+  if (!gameOver.value) {
+    setTimeout(gameLoop, 100);
+  }
 }
 
 function draw() {
@@ -199,7 +201,6 @@ onUnmounted(() => {
   height: 100vh;
   padding: 20px;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .game-container {
@@ -243,11 +244,18 @@ onUnmounted(() => {
 }
 
 .game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px 40px;
+  border-radius: 10px;
   font-size: 24px;
-  color: #ff0000;
-  font-weight: bold;
-  margin-top: 10px;
+  z-index: 100;
 }
+
 
 .gamepad-status {
   font-size: 16px;
