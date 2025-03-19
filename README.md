@@ -12,6 +12,8 @@ A snake game developed with Tauri + Vue 3.
 ### Game Over | 游戏失败界面
 ![Game Over Screen](./png/failed.png)
 
+![Game Over Screen](./png/English.png)
+
 ### Execute | 执行
 
 ```sh
