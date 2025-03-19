@@ -13,8 +13,8 @@
     "windows": [
       {
         "title": "snake",
-        "width": 900,
-        "height": 700,
+        "width": 880,
+        "height": 780,
         "resizable": false,
         "center": true
       }

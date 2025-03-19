@@ -1,12 +1,18 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { invoke } from "@tauri-apps/api/core";
+import { useI18n } from "vue-i18n";
 
 const score = ref(0);
 const gameOver = ref(false);
 const gameStarted = ref(false);
 const canvasRef = ref(null);
 const gamepadConnected = ref(false);
+const { t, locale } = useI18n();
+
+function toggleLanguage() {
+  locale.value = locale.value === 'zh' ? 'en' : 'zh';
+}
 
 const CELL_SIZE = 20;
 const CANVAS_WIDTH = 600;
@@ -157,9 +163,17 @@ onUnmounted(() => {
 
 <template>
   <div class="container">
-    <h1>贪吃蛇游戏</h1>
-    
-    <div class="game-container">
+    <div class="game-card">
+      <div class="game-header">
+        <div class="score-box">
+          <p class="score">{{ t('score', { score }) }}</p>
+        </div>
+        <h1 class="game-title">{{ t('title') }}</h1>
+        <button @click="toggleLanguage" class="language-button">
+          {{ locale === 'zh' ? 'English' : '中文' }}
+        </button>
+      </div>
+
       <canvas
         ref="canvasRef"
         :width="CANVAS_WIDTH"
@@ -167,21 +181,20 @@ onUnmounted(() => {
         class="game-canvas"
       ></canvas>
       
-      <div class="game-info">
-        <p class="score">分数: {{ score }}</p>
-        <p class="gamepad-status" :class="{ 'connected': gamepadConnected }">
-          {{ gamepadConnected ? '游戏手柄已连接' : '未检测到游戏手柄' }}
-        </p>
+      <div class="control-panel">
         <button
           @click="startGame"
           class="start-button"
         >
-          {{ gameStarted && !gameOver ? '重新开始' : '开始游戏' }}
+          {{ t(gameStarted && !gameOver ? 'restartGame' : 'startGame') }}
         </button>
-        
-        <div v-if="gameOver" class="game-over">
-          游戏结束!
-        </div>
+        <p class="gamepad-status" :class="{ 'connected': gamepadConnected }">
+          {{ t(gamepadConnected ? 'gamepadConnected' : 'gamepadDisconnected') }}
+        </p>
+      </div>
+      
+      <div v-if="gameOver" class="game-over">
+        {{ t('gameOver') }}
       </div>
     </div>
   </div>
@@ -192,55 +205,135 @@ onUnmounted(() => {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background-color: #f0f2f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 .container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
 }
 
-.game-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
+.game-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 24px;
+  width: 100%;
+  max-width: 800px;
+  position: relative;
 }
 
-.game-canvas {
-  border: 2px solid #333;
-  background-color: #f0f0f0;
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-.game-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
+.game-title {
+  font-size: 28px;
+  color: #1a1a1a;
+  margin: 0;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+  margin: 0 20px;
+}
+
+.score-box {
+  border-radius: 8px;
+  padding: 8px 16px;
+  min-width: 120px;
+  padding: 8px 16px;
 }
 
 .score {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 600;
   margin: 0;
+  color: #4CAF50;
+}
+
+.game-canvas {
+  width: 100%;
+  background-color: #fafafa;
+  border-radius: 12px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+
+.control-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0px auto;
+  padding: 5px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-wrap: wrap;
 }
 
 .start-button {
-  padding: 10px 20px;
-  font-size: 18px;
-  background-color: #4CAF50;
+  flex: 1;
+  min-width: 200px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #4CAF50, #45a049);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .start-button:hover {
-  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.gamepad-status {
+  flex: 1;
+  min-width: 200px;
+  text-align: center;
+  font-size: 14px;
+  margin: 0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.gamepad-status.connected {
+  color: #4CAF50;
+  background-color: #E8F5E9;
+}
+
+.language-button {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.language-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
 .game-over {
@@ -248,22 +341,13 @@ onUnmounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 20px 40px;
-  border-radius: 10px;
-  font-size: 24px;
-  z-index: 100;
-}
-
-
-.gamepad-status {
-  font-size: 16px;
-  margin: 5px 0;
-  color: #666;
-}
-
-.gamepad-status.connected {
-  color: #4CAF50;
+  font-size: 32px;
+  font-weight: bold;
+  color: #f44336;
+  background-color: rgba(255, 255, 255, 0.98);
+  padding: 24px 48px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(4px);
 }
 </style>
