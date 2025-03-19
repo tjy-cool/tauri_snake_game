@@ -12,6 +12,13 @@ A snake game developed with Tauri + Vue 3.
 ### Game Over | 游戏失败界面
 ![Game Over Screen](./png/failed.png)
 
+### Execute | 执行
+
+```sh
+npm install
+npm run tauri dev
+```
+
 ## Development Setup | 开发环境设置
 
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
