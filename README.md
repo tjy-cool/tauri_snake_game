@@ -9,10 +9,15 @@ A snake game developed with Tauri + Vue 3.
 ### Game Start | 游戏开始界面
 ![Game Start Screen](./png/start.png)
 
+![With Gamepad Screen](./png/GamepadConnectCN.png)
+
+
 ### Game Over | 游戏失败界面
 ![Game Over Screen](./png/failed.png)
 
 ![Game Over Screen](./png/English.png)
+
+![With Gamepad Screen](./png/GamepadConnectEN.png)
 
 ### Execute | 执行
 
